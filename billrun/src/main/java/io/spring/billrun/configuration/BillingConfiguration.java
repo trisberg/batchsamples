@@ -17,6 +17,7 @@
 package io.spring.billrun.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.spring.billrun.JobCompletionNotificationListener;
 import io.spring.billrun.model.Bill;
 import io.spring.billrun.model.Usage;
 import javax.sql.DataSource;
@@ -26,8 +27,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
@@ -38,38 +40,40 @@ import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonItemReader;
 import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Configuration
 @EnableTask
 @EnableBatchProcessing
 public class BillingConfiguration {
-	@Autowired
-	public JobBuilderFactory jobBuilderFactory;
-
-	@Autowired
-	public StepBuilderFactory stepBuilderFactory;
 
 	@Value("${usage.file.name:classpath:usageinfo.json}")
 	private Resource usageResource;
 
 	@Bean
-	public Job job1(ItemReader<Usage> reader, ItemProcessor<Usage, Bill> itemProcessor, ItemWriter<Bill> writer) {
-		Step step = stepBuilderFactory.get("BillProcessing")
-				.<Usage, Bill>chunk(1)
+	public Job job1(JobRepository jobRepository, Step step1, JobCompletionNotificationListener listener) {
+		return new JobBuilder("BillJob", jobRepository)
+				.listener(listener)
+				.incrementer(new RunIdIncrementer())
+				.start(step1)
+				.build();
+	}
+	@Bean
+	public Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager, ItemReader<Usage> reader, ItemProcessor<Usage, Bill> itemProcessor, ItemWriter<Bill> writer) {
+		return new StepBuilder("BillProcessing", jobRepository)
+				.<Usage, Bill>chunk(1, transactionManager)
 				.reader(reader)
 				.processor(itemProcessor)
 				.writer(writer)
-				.build();
-
-		return jobBuilderFactory.get("BillJob")
-				.incrementer(new RunIdIncrementer())
-				.start(step)
 				.build();
 	}
 

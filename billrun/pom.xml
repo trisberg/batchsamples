@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>spring-cloud-task-edu-samples</artifactId>
 		<groupId>io.spring</groupId>
-		<version>2.0.0-SNAPSHOT</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>billrun</artifactId>
@@ -14,8 +14,8 @@
 	<description>Bill processing app using Spring Batch</description>
 
 	<properties>
-		<java.version>1.8</java.version>
-		<spring-cloud.version>2021.0.0</spring-cloud.version>
+		<java.version>17</java.version>
+		<spring-cloud.version>2024.0.1</spring-cloud.version>
 		<docker.org>springcloudtask</docker.org>
 	</properties>
 
@@ -58,13 +58,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
 		</dependency>
 	</dependencies>
 

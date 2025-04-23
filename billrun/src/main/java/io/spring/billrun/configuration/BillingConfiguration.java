@@ -53,7 +53,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 @EnableTask
-@EnableBatchProcessing
 public class BillingConfiguration {
 
 	@Value("${usage.file.name:classpath:usageinfo.json}")

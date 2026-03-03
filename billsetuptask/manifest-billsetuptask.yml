@@ -1,0 +1,15 @@
+applications:
+  - name: billsetuptask
+    memory: 32M
+    health-check-type: process
+    no-route: true
+    instances: 0
+    disk_quota: 1G
+    timeout: 180
+    buildpacks:
+      - java_buildpack_offline
+    path: target/billsetuptask-0.0.1-SNAPSHOT.jar
+    env:
+      JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ } }'
+    services:
+      - task-example-mysql

@@ -1,0 +1,12 @@
+{
+  "name": "billrun-tools",
+  "version": "1.0.0",
+  "description": "Billrun tools keep-alive app",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}

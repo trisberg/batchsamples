@@ -9,7 +9,7 @@ class MyappApplicationTests {
 
 	@BeforeAll
 	static void setSystemProperties() {
-		System.setProperty("spring.batch.jdbc.schema.classic", "true");
+		System.setProperty("spring.batch.jdbc.schema.legacy", "true");
 	}
 
 	@Test

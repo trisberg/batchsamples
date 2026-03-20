@@ -30,7 +30,7 @@ public class BatchConfiguration {
 
     public BatchConfiguration() throws Exception {
         log.info("TEST env var: {}", System.getenv("TEST"));
-        log.info("SPRING_BATCH_JDBC_SCHEMA_CLASSIC env var: {}", System.getenv("SPRING_BATCH_JDBC_SCHEMA_CLASSIC"));
+        log.info("SPRING_BATCH_JDBC_SCHEMA_LEGACY env var: {}", System.getenv("SPRING_BATCH_JDBC_SCHEMA_LEGACY"));
     }
 
     @Bean
